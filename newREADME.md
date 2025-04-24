@@ -1,114 +1,136 @@
 
-# 🧠 Deep Learning Assignment - CBIT IT Dept
+## 🧐 Deep Learning Assignment 2
 
-**Course**: DL (22CAC04)  
-**Institution**: CBIT, Hyderabad  
-**Branch**: Information Technology  
-**Assignment Due**: April 20, 2025
+*Course:* Deep Learning - 22CAC04  
+*Institution:* Chaitanya Bharathi Institute of Technology  
+*Department:* Information Technology  
+*Due Date:* 20-04-25
 
----
+### 🔍 Overview
 
-## 📘 Contents
-
-This repository showcases two key components of Assignment 2:
-
-- 🔤 **Q1**: Transliteration using Sequence-to-Sequence models  
-- ✍️ **Q2**: Text generation by fine-tuning GPT-2 on poetry
+This repository contains the implementation of *Question 1* and *Question 2* of the Deep Learning Assignment 2.
 
 ---
 
-## 🔡 Question 1 - Transliteration from Latin to Devanagari
+## 📌 Question 1: Latin-to-Devanagari Transliteration
 
-### 🎯 Goal
+### 🚀 Objective
 
-Design and implement a configurable sequence-to-sequence model that transliterates Latin script inputs into their corresponding Devanagari outputs. The architecture should be adaptable to various RNN cells and configurations.
+To build a flexible RNN-based seq2seq architecture for transliterating Latin script inputs to their corresponding Devanagari script representations. The model supports multiple cell types: *SimpleRNN*, *GRU*, and *LSTM*, with tunable hyperparameters.
 
-### 📁 Dataset - Dakshina by Google
+---
 
-Source: [Google Research - Dakshina](https://github.com/google-research-datasets/dakshina)  
+### 🗂 Dataset
+
+Dataset used: [Dakshina Dataset (Google)](https://github.com/google-research-datasets/dakshina)  
 Files used:
 
 - `hi.translit.sampled.train.tsv`
 - `hi.translit.sampled.dev.tsv`
 - `hi.translit.sampled.test.tsv`
 
-Each line contains:
-- Hindi word in Devanagari
-- Corresponding Latin script
+Each file contains the following columns:
+
+- Devanagari script
+- Latin transliteration
 - Frequency count
 
 ---
 
-### 🏗️ Model Blueprint
+### 🧱 Model Architecture
 
-- 🔠 Embedding layer (encoder & decoder)
-- 🧠 Recurrent Cell (RNN / LSTM / GRU)
-- 🔄 Encoder processes Latin characters
-- 🗣️ Decoder generates Devanagari characters
-- 🔚 Dense layer with softmax for output prediction
+1. Embedding layers for both encoder and decoder
+2. Encoder RNN (LSTM / GRU / SimpleRNN) to process Latin inputs
+3. Decoder RNN (LSTM / GRU / SimpleRNN) to generate Devanagari characters
+4. Dense layer with softmax for prediction
 
-> 🛠️ The design supports dynamic changes for:
-> - RNN type
-> - Embedding dimensions
-> - Hidden layer size
-> - Vocabulary size
+**Tunable Parameters:**
+
+- Embedding dimension
+- Hidden size
+- RNN cell type (`rnn`, `gru`, `lstm`)
+- Number of RNN layers
 
 ---
 
-### 🔬 Computation & Parameters
+### 🧮 Theoretical Analysis
 
-#### (a) Total Computation
+#### a) Total Number of Computations
 
-For:
-- `m =` embedding size
-- `k =` hidden dimension
-- `T =` sequence length
-- `V =` vocabulary size
+Let:  
+- *m* = embedding dimension  
+- *k* = hidden size  
+- *T* = sequence length  
+- *V* = vocabulary size  
 
-Computation per time step:  
-- Encoder ≈ T × (m×k + k²)  
-- Decoder ≈ T × (m×k + k² + k×V)
+**Encoder Computation:** O(T × (m×k + k²))  
+**Decoder Computation:** O(T × (m×k + k² + k×V))
 
-#### (b) Total Parameters
+#### b) Total Number of Parameters
 
 - Encoder LSTM: 4 × (k × (k + m + 1))  
 - Decoder LSTM: 4 × (k × (k + m + 1))  
-- Output layer: k × V  
-- Embeddings: V × m (encoder + decoder)
+- Output Dense: k × V  
+- Embedding Layers: V × m (for both encoder and decoder)
 
 ---
 
-### 🧪 Performance
+### 📊 Training Details
 
-- **Optimizer**: Adam  
-- **Loss**: Categorical Crossentropy  
-- **Epochs**: 30  
-- **Batch Size**: 64  
-- **Test Accuracy**: `94.57%`
-
----
-
-### ✨ Sample Output
-
-| Latin Input | Expected Output | Model Prediction |
-|-------------|-----------------|------------------|
-| a n k       | अंक              | ऐंक              |
-| a n k i t   | अंकित            | अंकित             |
-| a n k a     | अंका             | अंका              |
-| a n a k o n | अनकों            | अनकों             |
-| a n k h o n | अंखों            | अंखों             |
+- **Optimizer:** Adam  
+- **Loss Function:** Categorical Crossentropy  
+- **Batch Size:** 64  
+- **Epochs:** 30  
+- **Validation Accuracy:** ~94.6%  
+- **Test Accuracy:** *0.9457*
 
 ---
 
-### ▶️ Run Instructions
+### 📈 Sample Predictions
 
-Install required libraries:
+Below are examples demonstrating the model’s transliteration capability from Latin input to Devanagari output:
+
+- **Input:** `a n k`  
+  **Target:** अं क  
+  **Predicted:** ऐंक
+
+- **Input:** `a n k a`  
+  **Target:** अं क अ  
+  **Predicted:** अंका
+
+- **Input:** `a n k i t`  
+  **Target:** अं कि त  
+  **Predicted:** अंकित
+
+- **Input:** `a n a k o n`  
+  **Target:** अ न क ो न  
+  **Predicted:** अनकों
+
+- **Input:** `a n k h o n`  
+  **Target:** अं ख ो ं  
+  **Predicted:** अंखों
+
+---
+
+### 🧲 Evaluation
+
+```bash
+Test Accuracy: 0.9457
+```
+
+---
+
+### 🛠 How to Run
+
+#### 🔧 Install Requirements
 
 ```bash
 pip install tensorflow==2.12.0 pandas gdown
 ```
 
-Run training script (with dataset in root):
+#### ▶ Run Training
+
+Ensure the .tsv files from the Dakshina dataset are placed in your working directory.
 
 ```bash
 python main_seq2seq_transliteration.py
@@ -116,101 +138,111 @@ python main_seq2seq_transliteration.py
 
 ---
 
-## ✨ Question 2 - GPT-2 Fine-Tuning for Poetry Generation
-
-### 📝 Summary
-
-This task focuses on creatively generating poetic text by fine-tuning OpenAI's GPT-2 model on a curated poetry dataset using the Transformers library and TensorFlow backend.
-
-### 📚 Dataset
-
-Used: [`poetry` dataset by Paul Mooney (Kaggle)](https://www.kaggle.com/datasets/paultimothymooney/poetry)
-
-- Only the `bieber.txt` file was selected for fine-tuning.
-
----
-
-### 🧱 GPT-2 Configuration
-
-- Model: `gpt2` via Hugging Face
-- Tokenizer: GPT-2 with padding token
-- Sequence length: 128 tokens
-- Epochs: 3
-- Batch Size: 4
-
----
-
-### 🔄 Training Logs
+### 📂 File Structure
 
 ```
-Epoch 1 - Loss: 0.2775
-Epoch 2 - Loss: 0.1929
-Epoch 3 - Loss: 0.1515
+.
+├── README.md
+├── main_seq2seq_transliteration.py
+├── hi.translit.sampled.train.tsv
+├── hi.translit.sampled.dev.tsv
+└── hi.translit.sampled.test.tsv
 ```
 
 ---
 
-### 🎤 Sample Generation
+📘 **References**
 
-Prompt:
-
-```text
-In the moonlight, I feel
-My heart begins to heal
-The stars are shining bright
-I'm floating in the night
-```
-
-Generated:
-
-```
-🌟 Version 1:
-In the moonlight, I feel
-My heart begins to heal
-The stars are shining bright
-I'm floating in the night
-Whispers in the dark
-
-🌟 Version 2:
-In the moonlight, I feel
-My heart begins to heal
-The stars are shining bright
-I'm floating in the night
-Calling out your name
-```
+- [Keras LSTM Seq2Seq Example](https://keras.io/examples/nlp/lstm_seq2seq/)
+- [Machine Learning Mastery - Seq2Seq](https://machinelearningmastery.com/define-encoder-decoder-sequence-sequence-model-neural-machine-translation-keras/)
+- [Dakshina Dataset](https://github.com/google-research-datasets/dakshina)
 
 ---
 
-### 📦 Output Directory
+# 🎤 Fine-Tuned GPT-2 on Poetry Dataset
 
-Trained artifacts are saved in:
+This project fine-tunes the GPT-2 language model on a poetry dataset to generate creative and lyrical text. It uses TensorFlow and Hugging Face Transformers to train the model and generate diverse lyrics from a given prompt.
 
-```
-./fine_tuned_gpt2_poetry/
-```
+## 📂 Dataset
 
----
+Dataset used: [Poetry Dataset by Paul Mooney](https://www.kaggle.com/datasets/paultimothymooney/poetry)  
+For this project, only the `bieber.txt` file was utilized.
 
-## 🔧 Setup Guide
+## 🧠 Model
 
-Install requirements:
+The model is based on Hugging Face's `gpt2` and was trained using TensorFlow.
+
+**Configuration:**
+
+- Base: GPT-2 (`TFGPT2LMHeadModel`)
+- Tokenizer: GPT-2 tokenizer with EOS token padding
+- Max input length: 128 tokens
+- Training epochs: 3
+- Batch size: 4
+
+## 🚀 Setup Instructions
+
+1. Clone this repo and open the notebook in Colab.
+2. Install the necessary libraries:
 
 ```bash
 pip install kagglehub datasets transformers
 ```
 
-Follow notebook to:
-- Load dataset
-- Preprocess
-- Fine-tune GPT-2
-- Generate poetic output
+3. Authenticate with Kaggle to access the dataset.
+4. Run the notebook to preprocess, train, and generate outputs.
+
+## 🏋️‍♀️ Training Log
+
+```
+Epoch 1/3 - loss: 0.2775  
+Epoch 2/3 - loss: 0.1929  
+Epoch 3/3 - loss: 0.1515  
+```
+
+## 🎶 Sample Generations
+
+Given this prompt:
+
+```text
+In the moonlight, I feel  
+My heart begins to heal  
+The stars are shining bright  
+I'm floating in the night  
+```
+
+The model outputs:
+
+- 🎶 *Version 1:*  
+  In the moonlight, I feel  
+  My heart begins to heal  
+  The stars are shining bright  
+  I'm floating in the night  
+  It's all about the magic  
+
+- 🎶 *Version 2:*  
+  In the moonlight, I feel  
+  My heart begins to heal  
+  The stars are shining bright  
+  I'm floating in the night  
+  So take my hand
+
+## 📁 Output
+
+Model saved at:
+
+```
+./fine_tuned_gpt2_poetry/
+```
+
+## 🔮 Future Enhancements
+
+- Train on a larger or more stylistically diverse poetry corpus
+- Add rhyme/meter-based constraints for improved poetic structure
+- Deploy as an interactive app or web-based lyric assistant
 
 ---
 
-## 👨‍💻 Author
+## 👤 Author
 
-**Namani Pravardhan**  
-CBIT | Dept. of IT  
-
-
----
+**Namani Pravardhan**
